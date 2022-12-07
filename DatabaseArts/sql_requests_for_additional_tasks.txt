@@ -1,0 +1,10 @@
+SELECT 	SELECTED_ARTISTIC_WORKS_INFO.artistic_work_id, SELECTED_ARTISTIC_WORKS_INFO.name, SELECTED_ARTISTIC_WORKS_INFO.artistic_work_type_id, SELECTED_ARTISTIC_WORKS_INFO.date_of_creation,
+		ARTISTS_INFO.artist_id, ARTISTS_INFO.name, ARTISTS_INFO.birth_date
+FROM (SELECT ARTISTIC_WORKS_INFO.* FROM (SELECT DISTINCT artistic_work_id FROM "exhibition_artistic_work" WHERE "exhibition_id" = "11") AS ARTISTIC_WORKS_IDS
+	JOIN "artistic_works" as ARTISTIC_WORKS_INFO ON ARTISTIC_WORKS_IDS.artistic_work_id = ARTISTIC_WORKS_INFO.artistic_work_id) AS SELECTED_ARTISTIC_WORKS_INFO 
+		JOIN "artists" AS ARTISTS_INFO ON SELECTED_ARTISTIC_WORKS_INFO.artist_id = ARTISTS_INFO.artist_id;
+		
+		
+SELECT EXHIBITIONS_INFO.exhibition_id, EXHIBITIONS_INFO.name, EXHIBITIONS_INFO.date, EXHIBITIONS_INFO.duration, address FROM (SELECT exhibition_id, address FROM "hall_exhibition" AS HALL_EXHIBiTION_INFO
+	JOIN "halls" AS HALLS_INFO ON HALL_EXHIBiTION_INFO.hall_id = HALLS_INFO.hall_id WHERE city="Минск") AS ADDRESSES 
+		JOIN "exhibitions" AS EXHIBITIONS_INFO ON ADDRESSES.exhibition_id = EXHIBITIONS_INFO.exhibition_id;
