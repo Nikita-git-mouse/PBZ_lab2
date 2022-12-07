@@ -57,43 +57,42 @@ class Interface(App):
 
         if self.table_mode == 1:
             change_mode_button.bind(on_press=partial(self.changeTableDisplayMode, 0))
+            # Input field
             argument_input = TextInput(text="ARG", size_hint=(1, 0.2))
-            # Exhibition Info
             buttons.add_widget(argument_input)
-            exhibition_info_button = Button(text="course output\n[Org;Date]",
-                                            background_color=(130 / 255, 160 / 255, 150 / 255, 1),
-                                            halign="center", valign="middle", size_hint=(1, 0.2))
-            exhibition_info_button.bind(on_press=partial(self.widgetEventFunction,
-                                                         self.model.getInfoAboutExhibition,
-                                                         argument_input))
-            exhibition_info_button.bind(size=exhibition_info_button.setter('text_size'))
-            # Halls in City Info
+            # AdditionalTask1
+            button_task_1 = Button(text="course output\n[Org;Date]",
+                                   background_color=(130 / 255, 160 / 255, 150 / 255, 1),
+                                   halign="center", valign="middle", size_hint=(1, 0.2))
+            button_task_1.bind(on_press=partial(self.widgetEventFunction,
+                                                self.model.AdditionalTask1, argument_input))
+            button_task_1.bind(size=button_task_1.setter('text_size'))
+            # AdditionalTask2
+            button_task_2 = Button(text="2th\n[id;st;end]",
+                                   background_color=(130 / 255, 160 / 255, 150 / 255, 1),
+                                   halign="center", valign="middle", size_hint=(1, 0.2))
+            button_task_2.bind(on_press=partial(self.widgetEventFunction,
+                                                self.model.AdditionalTask2, argument_input))
+            button_task_2.bind(size=button_task_2.setter('text_size'))
+            # AdditionalTask3
+            button_task_3 = Button(text="3th\n[id;date1;date2]\nYYYY.MM.DD",
+                                   background_color=(130 / 255, 160 / 255, 150 / 255, 1),
+                                   halign="center", valign="middle", size_hint=(1, 0.2))
+            button_task_3.bind(on_press=partial(self.widgetEventFunction,
+                                                self.model.AdditionalTask3, argument_input))
+            button_task_3.bind(size=button_task_3.setter('text_size'))
 
-            halls_info_button = Button(text="3th\n[ARG]",
-                                            background_color=(130 / 255, 160 / 255, 150 / 255, 1),
-                                            halign="center", valign="middle", size_hint=(1, 0.2))
-            halls_info_button.bind(on_press=partial(self.widgetEventFunction,
-                                                    self.model.getAllHallsInCityNow,
-                                                    argument_input))
-            halls_info_button.bind(size=halls_info_button.setter('text_size'))
-            # All Exhibitions Now Info
-            all_exhibitions_in_city_info_button = Button(text="2th\n[id;st;end]",
-                                                         background_color=(130 / 255, 160 / 255, 150 / 255, 1),
-                                                         halign="center", valign="middle", size_hint=(1, 0.2))
-            all_exhibitions_in_city_info_button.bind(size=all_exhibitions_in_city_info_button.setter('text_size'))
-            all_exhibitions_in_city_info_button.bind(on_press=partial(self.widgetEventFunction,
-                                                                      self.model.getAllExhibitionsInCityNow,
-                                                                      argument_input))
-
-            buttons.add_widget(exhibition_info_button)
-            buttons.add_widget(halls_info_button)
-            buttons.add_widget(all_exhibitions_in_city_info_button)
+            buttons.add_widget(button_task_1)
+            buttons.add_widget(button_task_2)
+            buttons.add_widget(button_task_3)
+            # Additional info
             additional_info_label = Label(size_hint=(1, 0.4))
             if self.model.additional_info:
                 additional_info_label = Button(text=str(self.model.additional_info), size_hint=(1, 0.4),
                                                background_color=(120 / 255, 140 / 255, 140 / 255, 1),
                                                disabled=True, halign="center", valign="middle")
                 additional_info_label.bind(size=additional_info_label.setter('text_size'))
+
             buttons.add_widget(additional_info_label)
             buttons.add_widget(BoxLayout())
 

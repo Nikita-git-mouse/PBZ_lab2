@@ -59,9 +59,9 @@ class AppController:
             value = f"{args[0][index].text}"
             try:
                 if self.current_columns[index][2] == "INTEGER":
-                        value = int(value)
+                    value = int(value)
                 if self.current_columns[index][2] == "REAL":
-                        value = float(value)
+                    value = float(value)
             except Exception as ex:
                 print(ex)
                 return
@@ -115,22 +115,25 @@ class AppController:
         self.saveChangesInTable()
         self.updateCurrentRecords()
 
-    def getInfoAboutExhibition(self, *args):
+    def AdditionalTask1(self, *args):
         try:
             self.additional_info = None
-            org, date_ = args[0].text.split(";")
-            # print(org, date_)
-
-            query = f'''SELECT courses_info.title, courses_info.training_days_full, courses_info.training_days, price_doc.price, price_doc.price_with_NDS FROM 
-  (SELECT * FROM 
-    (SELECT DISTINCT id_course FROM organization 
-      JOIN organization_course ON organization.id = organization_course.id_organization 
-        WHERE organization.title="{org}"
-    ) AS courses 
-    JOIN course ON courses.id_course = course.id) AS courses_info
-  JOIN price_doc ON courses_info.price_id = price_doc.id WHERE price_doc.date = "{date_}";'''
+            org_, date_ = args[0].text.split(";")
+            query = f" SELECT courses_info.title, courses_info.training_days_full," \
+                    f" courses_info.training_days, price_doc.price, price_doc.price_with_NDS" \
+                    f" FROM (SELECT * FROM (SELECT DISTINCT id_course FROM organization" \
+                    f" JOIN organization_course ON organization.id = organization_course.id_organization" \
+                    f" WHERE organization.title=\"{org_}\") AS courses JOIN course ON courses.id_course = course.id)" \
+                    f" AS courses_info JOIN price_doc ON courses_info.price_id = price_doc.id" \
+                    f" WHERE price_doc.date = \"{date_}\";"
             self.current_records = self.database.executeSQLiteQuery(query=query)
-            self.current_columns = [(0, "title",),(1, "training_days_full",),(2, "training_days",),(3, "price",),(4, "price_with_NDS",),]
+            self.current_columns = [
+                (0, "title",),
+                (1, "training_days_full",),
+                (2, "training_days",),
+                (3, "price",),
+                (4, "price_with_NDS",),
+            ]
             self.current_page = 0
 
             # change artists birth to age
@@ -148,53 +151,60 @@ class AppController:
             print(ex)
         return
 
-    def getAllExhibitionsInCityNow(self, *args):
+    def AdditionalTask2(self, *args):
         try:
             self.additional_info = None
             teach_id, date_start, date_finish = args[0].text.split(";")
-
-            # query = f"SELECT EXHIBITIONS_INFO.exhibition_id, EXHIBITIONS_INFO.name, EXHIBITIONS_INFO.date, EXHIBITIONS_INFO.duration, address" \
-            #         f" FROM (SELECT exhibition_id, address FROM \"hall_exhibition\" AS HALL_EXHIBiTION_INFO" \
-            #         f" JOIN \"halls\" AS HALLS_INFO ON HALL_EXHIBiTION_INFO.hall_id = HALLS_INFO.hall_id WHERE city=\"{args[0].text}\") AS ADDRESSES" \
-            #         f" JOIN \"exhibitions\" AS EXHIBITIONS_INFO ON ADDRESSES.exhibition_id = EXHIBITIONS_INFO.exhibition_id;"
-            query = f'''SELECT * FROM teachers_doc_edu WHERE teacher_id=\"{teach_id}\";'''
-            print(query)
+            query = f"SELECT * FROM teachers_doc_edu WHERE teacher_id=\"{teach_id}\";"
             self.current_records = self.database.executeSQLiteQuery(query=query)
-            print(self.current_records)
-
-            self.current_columns = [(0, "start",), (1, "finish",), (2, "course",),
-                                    (3, "teacher_id",), ]
+            self.current_columns = [
+                (0, "start",),
+                (1, "finish",),
+                (2, "course",),
+                (3, "teacher_id",),
+            ]
             self.current_page = 0
 
             # Leave only those exhibitions that are taking place now
             today = datetime.today()
-            records_to_delete = []
+            records_not_to_display = []
             start_date = datetime.strptime(date_start, '%d.%m.%Y')
             finish_date = datetime.strptime(date_finish, '%d.%m.%Y')
             for record in self.current_records:
-                course_start_date  = datetime.strptime(record[0], '%d.%m.%Y')
-                course_finisht_date  = datetime.strptime(record[1], '%d.%m.%Y')
+                course_start_date = datetime.strptime(record[0], '%d.%m.%Y')
+                course_finish_date = datetime.strptime(record[1], '%d.%m.%Y')
 
-                if finish_date > course_start_date and start_date < course_finisht_date:
+                if finish_date > course_start_date and start_date < course_finish_date:
                     if not 0 < (course_start_date - start_date).days:
-                        records_to_delete.append(record)
-            for record in records_to_delete:
+                        records_not_to_display.append(record)
+            for record in records_not_to_display:
                 self.current_records.remove(record)
 
         except Exception as ex:
             print(ex)
         return
 
-    def getAllHallsInCityNow(self, *args):
+    def AdditionalTask3(self, *args):
         try:
             self.additional_info = None
-            # query = f"SELECT * FROM \"halls\" WHERE \"city\"=\"{args[0].text}\""
-            #
-            query = '''SELECT * FROM persons_to_study WHERE course_id="1";'''
+            course_id, date_start, date_finish = args[0].text.split(";")
+            query = f" SELECT persons_to_study.*, course.number_of_person" \
+                    f" FROM persons_to_study JOIN course ON persons_to_study.course_id = course.id" \
+                    f" WHERE course_id={course_id} AND start_course >= \"{date_start}\" AND finish_course <= \"{date_finish}\";"
             self.current_records = self.database.executeSQLiteQuery(query=query)
-            self.current_columns = [(0, "hall_id",), (1, "name",), (2, "size",),
-                                    (3, "city",), (4, "address",), (5, "phone",), (5, "owner_id",),]
+            print(self.current_records)
+            # 1;2021.09.02;2023.02.01
+            # 1;2023.01.01;2023.02.01
+            self.current_columns = [
+                (0, "FIO",),
+                (1, "position",),
+                (2, "cours_id",),
+                (3, "start_course",),
+                (4, "finish_course",),
+                (5, "number_of_person",),
+            ]
             self.current_page = 0
+            self.additional_info = f"Course is full: {'TRUE' if (len(self.current_records) >= 0 if len(self.current_records) <= 0 else self.current_records[0][5]) is 1 else 'FALSE'}"
 
         except Exception as ex:
             print(ex)
