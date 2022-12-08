@@ -77,7 +77,7 @@ class Interface(App):
             # AdditionalTask3
             button_task_3 = Button(text="3th\n[id;date1;date2]\nYYYY.MM.DD",
                                    background_color=(130 / 255, 160 / 255, 150 / 255, 1),
-                                   halign="center", valign="middle", size_hint=(1, 0.2))
+                                   halign="center", valign="middle", size_hint=(1, 0.3))
             button_task_3.bind(on_press=partial(self.widgetEventFunction,
                                                 self.model.AdditionalTask3, argument_input))
             button_task_3.bind(size=button_task_3.setter('text_size'))
@@ -86,7 +86,7 @@ class Interface(App):
             buttons.add_widget(button_task_2)
             buttons.add_widget(button_task_3)
             # Additional info
-            additional_info_label = Label(size_hint=(1, 0.4))
+            additional_info_label = Label(size_hint=(1, 0.3))
             if self.model.additional_info:
                 additional_info_label = Button(text=str(self.model.additional_info), size_hint=(1, 0.4),
                                                background_color=(120 / 255, 140 / 255, 140 / 255, 1),
